@@ -41,3 +41,12 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: Ground
+    uniqueID: 3664629463
+    locked: 0
+  - name: Foliage
+    uniqueID: 2033414505
+    locked: 0
+  - name: Player
+    uniqueID: 410581423
+    locked: 0
