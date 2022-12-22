@@ -5,7 +5,7 @@ using UnityEngine;
 public class Enemy : MonoBehaviour
 {
     float speed = 10f;
-    [SerializeField] private Transform m_target;
+    private Transform m_target;
 
     void Start()
     {
@@ -18,5 +18,12 @@ public class Enemy : MonoBehaviour
         transform.position = Vector2.MoveTowards(transform.position, m_target.position, speed * Time.deltaTime);
 
         
+    }
+
+
+    public void SetTarget(Transform target)
+    {
+        m_target = target;
+
     }
 }

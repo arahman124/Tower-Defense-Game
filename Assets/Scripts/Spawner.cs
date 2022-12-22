@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class Spawner : MonoBehaviour
 {
-   
+
+    [SerializeField] private GameObject Tower;
     [SerializeField] private List<GameObject> m_enemyList;
     [SerializeField] private List<Transform> m_spawnPoints;
     [SerializeField] private float spawnDelay;
@@ -32,7 +33,8 @@ public class Spawner : MonoBehaviour
     {
         Transform spawnPoint = m_spawnPoints[Random.Range(0, m_spawnPoints.Count)];
         Debug.Log(spawnPoint.gameObject.name);
-        Instantiate(m_enemyList[Random.Range(0, m_enemyList.Count)], spawnPoint.position, Quaternion.identity);
+        GameObject enemy = Instantiate(m_enemyList[Random.Range(0, m_enemyList.Count)], spawnPoint.position, Quaternion.identity);
+        enemy.GetComponent<Enemy>().SetTarget(Tower.transform);
         hasSpawned = true;
         yield return new WaitForSeconds(spawnDelay);
         hasSpawned = false;
