@@ -50,8 +50,8 @@ public class Spawner : MonoBehaviour
         //Outputs the spawnpoint that the monster was spawned from - testing
         Debug.Log(spawnPoint.gameObject.name);
         //This is the variable for the enemy being spawned - passes in the random enemy type, spawnpoint position in form [x,y,z] and the rotation
-        //GameObject enemy = Instantiate(m_enemyList[Random.Range(0, m_enemyList.Count)], spawnPoint.position, Quaternion.identity);
-        GameObject enemy = ObjectPooling.getInstance().SpawnFromPool("Default", spawnPoint.position, Quaternion.identity);
+        GameObject enemy = Instantiate(m_enemyList[Random.Range(0, m_enemyList.Count)], spawnPoint.position, Quaternion.identity);
+        //GameObject enemy = ObjectPooling.getInstance().SpawnFromPool("Default", spawnPoint.position, Quaternion.identity);
         //Uses the method from the Enemy Script to make the enemy move towards the tower
         enemy.GetComponent<Enemy>().SetTarget(Tower.transform);
         //Sets the variable to true
