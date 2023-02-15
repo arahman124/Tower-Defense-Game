@@ -6425,7 +6425,7 @@ GameObject:
   - component: {fileID: 1665493242}
   - component: {fileID: 1665493241}
   - component: {fileID: 1665493243}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Tower
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6472,7 +6472,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 410581423
   m_SortingLayer: 4
-  m_SortingOrder: 0
+  m_SortingOrder: 2
   m_Sprite: {fileID: 21300000, guid: ba4772c15e5291543a71ab77b1d9346f, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -6673,7 +6673,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4c8ffa118e80a32448b350c26551f03f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  arrow: {fileID: 7339021782762487802, guid: fdf6bbf3104c85c44a6ad4bfc13dcc82, type: 3}
+  arrow: {fileID: 3034321787657248605, guid: fdf6bbf3104c85c44a6ad4bfc13dcc82, type: 3}
   launchForce: 8
   shotPoint: {fileID: 75503521}
 --- !u!114 &1828048268
