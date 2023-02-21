@@ -5,6 +5,9 @@ public class Arrows : MonoBehaviour
 {
     //Rigidbody variable declared for arrow
     Rigidbody2D rb;
+
+    private string GROUND_TAG = "Ground";
+
     // Start is called before the first frame update
     void Start()
     {
@@ -18,5 +21,13 @@ public class Arrows : MonoBehaviour
         float angle = Mathf.Atan2(rb.velocity.y, rb.velocity.x) * Mathf.Rad2Deg;
         //Rotates the arrow such that it has a nice arrow arc
         transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag(GROUND_TAG))
+        {
+            Destroy(gameObject);
+        }
     }
 }
