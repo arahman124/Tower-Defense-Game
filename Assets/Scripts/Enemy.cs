@@ -25,7 +25,7 @@ public class Enemy : MonoBehaviour
         {
             m_currentHealth = value;
 
-            if(m_currentHealth < 0)
+            if(m_currentHealth <= 0)
             {
                 // Kill the enemy
                 Destroy(gameObject);
