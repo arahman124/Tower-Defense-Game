@@ -13,27 +13,38 @@ public class Enemy : MonoBehaviour
 
     //Variable for the position that the enemy moves towards
     private Transform m_target;
-    [SerializeField] private float m_health;
+    [SerializeField] private float m_maxHealth;
+    [SerializeField] private float m_currentHealth;
 
     [SerializeField] private Transform m_healthBarLocation;
 
     public float Health
     {
-        get => m_health;
+        get => m_currentHealth;
         set
         {
-            float subValue = m_health - value;
-            float mult20 = subValue / 20;
+            m_currentHealth = value;
 
-            Debug.Log($"MULT20: {mult20}");
-
-            for (int i = 0; i < (int)mult20; ++i)
+            if(m_currentHealth < 0)
             {
-                Debug.Log("LOSING A HEART!");
-                LoseHeart();
+                // Kill the enemy
+                Destroy(gameObject);
             }
 
-            m_health = value;
+            int currentlyVisibleHearts = m_hearts.Count(x => x.visible);
+
+            float percentageHealth = m_currentHealth / m_maxHealth * 100f;
+
+            int heartThreshold = (currentlyVisibleHearts - 1) * 20;
+
+            if (heartThreshold >= percentageHealth)
+            {
+                int amountOfHeartsToLose = currentlyVisibleHearts - (RoundUp((int)percentageHealth, 20) / 20);
+                for(int i = 0; i < amountOfHeartsToLose; i++)
+                {
+                    LoseHeart();
+                }
+            }
         }
     }
 
@@ -50,6 +61,8 @@ public class Enemy : MonoBehaviour
         m_hearts = m_healthBar.Children().ToArray();
 
         SetHealthBarPosition();
+
+        m_currentHealth = m_maxHealth;
     }
 
     // Update is called once per frame
@@ -100,5 +113,23 @@ public class Enemy : MonoBehaviour
                 ((Enemy)target).Health -= 20f;
             }
         }
+    }
+
+    private int RoundUp(int numToRound, int multiple)
+    {
+        // Code taken from https://stackoverflow.com/questions/3407012/rounding-up-to-the-nearest-multiple-of-a-number
+        if (multiple == 0)
+        {
+            return numToRound;
+        }
+
+        int remainder = numToRound % multiple;
+
+        if (remainder == 0)
+        {
+            return numToRound;
+        }
+
+        return numToRound + multiple - remainder;
     }
 }
