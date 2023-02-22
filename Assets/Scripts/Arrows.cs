@@ -6,6 +6,7 @@ public class Arrows : MonoBehaviour
     //Rigidbody variable declared for arrow
     Rigidbody2D rb;
 
+    //Variable to hold tag for the ground
     private string GROUND_TAG = "Ground";
 
     // Start is called before the first frame update
@@ -23,10 +24,13 @@ public class Arrows : MonoBehaviour
         transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
     }
 
+    //Checks for collisions
     private void OnCollisionEnter2D(Collision2D collision)
     {
+        //Condition that if the arrow hits any object with the ground tag, it is deleted
         if (collision.gameObject.CompareTag(GROUND_TAG))
         {
+            //The arrow is deleted
             Destroy(gameObject);
         }
     }
