@@ -6,6 +6,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
 
+//Makes sure each object with this script attached has the UI and animation elements attached
 [RequireComponent(typeof(UIDocument), typeof(Animator))]
 public class Enemy : MonoBehaviour
 {
@@ -14,35 +15,49 @@ public class Enemy : MonoBehaviour
 
     //Variable for the position that the enemy moves towards
     private Transform m_target;
+    //Holds the initial health of the monster
     [SerializeField] private float m_maxHealth;
+    //Holds the changing health (current) of the monster
     [SerializeField] private float m_currentHealth;
 
+    //Holds the position of the health bar
     [SerializeField] private Transform m_healthBarLocation;
 
+    //Holds cooldown for animations
     [SerializeReference] private float m_cooldownDuration;
+    //Holds the variable for the timer of the cooldown
     private float m_cooldownTimer;
 
+    //Holds the variable for health
     public float Health
     {
+        //grabs the current health of the monster
         get => m_currentHealth;
         set
         {
             m_currentHealth = value;
 
+            //Sets state of animation to hurt
             State = EnemyState.Hurt;
 
             if (m_currentHealth <= 0)
             {
+                //Sets state of animation to dead
                 State = EnemyState.Dead;
-
+                
+                //Disables the box collider
                 GetComponent<BoxCollider2D>().enabled = false;
+                //Destroys the game object after 1.5 seconds
                 Destroy(gameObject, 1.5f);
             }
 
+            //Holds the total number of hearts that the monster has
             int currentlyVisibleHearts = m_hearts.Count(x => x.visible);
 
+            //Calculates the percentage of health
             float percentageHealth = m_currentHealth / m_maxHealth * 100f;
 
+            //Holds the next threshold for the next heart to be lost
             int heartThreshold = (currentlyVisibleHearts - 1) * 20;
 
             if (heartThreshold >= percentageHealth)
@@ -57,13 +72,17 @@ public class Enemy : MonoBehaviour
     }
 
 
+    //Variables for the on-screen display
     private VisualElement m_healthBar;
     private VisualElement[] m_hearts;
 
+    //Reference to the main camera as a variable
     private Camera m_mainCamera;
 
+    //Variable for access of animations
     private Animator m_animator;
 
+    //Different states of animation
     public enum EnemyState
     {
         Walking,
@@ -73,8 +92,10 @@ public class Enemy : MonoBehaviour
         Hurt
     }
 
+    //Used to access a state from enum and store as variable
     private EnemyState m_state;
 
+    //Boolean variable to tell if a monster has reached the tower or not
     private bool m_atTower = false;
 
     // We're using a property for the State so that we are able to trigger events when we set the value
@@ -153,6 +174,7 @@ public class Enemy : MonoBehaviour
                 // TODO: SET UP TIMER FOR ATTACKING THE TOWER
                 break;
             case EnemyState.Hurt:
+                //Timer counts down
                 m_cooldownTimer -= Time.deltaTime;
 
                 if (m_cooldownTimer <= 0f)
@@ -171,13 +193,16 @@ public class Enemy : MonoBehaviour
 
     }
 
+    //When the hurt animation is done, it goes back to idle animation
     public void OnHurtAnimationFinished()
     {
         m_animator.SetTrigger(Constants.MONSTER_IDLE);
     }
 
+    //Late update is called after the update function has finished at each frame
     private void LateUpdate()
     {
+        //Updates position of health bar with monster moving
         SetHealthBarPosition();
     }
 
@@ -188,21 +213,24 @@ public class Enemy : MonoBehaviour
         m_target = target;
 
     }
-
+    //Finds the current location of the health bar and updates the new location as the monster moves
     private void SetHealthBarPosition()
     {
         Vector2 newPosition = RuntimePanelUtils.CameraTransformWorldToPanel(m_healthBar.panel, m_healthBarLocation.position, m_mainCamera);
         m_healthBar.transform.position = new Vector2(newPosition.x - m_healthBar.layout.width / 2, newPosition.y);
     }
 
+    //Takes away a heart from the monster health
     private void LoseHeart()
     {
         // A LINQ expression to get the next visible heart from the healthbar
         VisualElement nextHeart = m_hearts.Where(x => x.visible).LastOrDefault();
 
+        //Sets the next heart as invisible
         nextHeart.style.visibility = Visibility.Hidden;
     }
 
+    //Checks if monster has reached the tower
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.CompareTag(Constants.TOWER_TAG))
