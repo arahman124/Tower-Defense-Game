@@ -35,7 +35,8 @@ public class Enemy : MonoBehaviour
             {
                 State = EnemyState.Dead;
 
-                Destroy(gameObject, 2.5f);
+                GetComponent<BoxCollider2D>().enabled = false;
+                Destroy(gameObject, 1.5f);
             }
 
             int currentlyVisibleHearts = m_hearts.Count(x => x.visible);
