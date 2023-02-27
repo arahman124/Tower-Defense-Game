@@ -44,7 +44,7 @@ public class Enemy : MonoBehaviour
             {
                 //Sets state of animation to dead
                 State = EnemyState.Dead;
-                
+
                 //Disables the box collider
                 GetComponent<BoxCollider2D>().enabled = false;
                 //Destroys the game object after 1.5 seconds
@@ -158,6 +158,14 @@ public class Enemy : MonoBehaviour
         m_currentHealth = m_maxHealth;
 
         State = EnemyState.Walking;
+
+        Vector2 walkDirection = m_target.position - transform.position;
+        if (walkDirection.x < 0)
+        {
+            Vector3 localScale = transform.localScale;
+            localScale.x *= -1;
+            transform.localScale = localScale;
+        }
     }
 
     // Update is called once per frame

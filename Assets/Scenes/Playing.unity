@@ -6216,7 +6216,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Tower: {fileID: 1665493240}
   m_enemyList:
-  - {fileID: 1250015245384694178, guid: 88761d66f648d75428aacab3bea45c84, type: 3}
+  - {fileID: 3120305801269310451, guid: 692c271584a540c4b817df5bb30147ee, type: 3}
   - {fileID: 1250015245384694178, guid: 88761d66f648d75428aacab3bea45c84, type: 3}
   m_spawnPoints:
   - {fileID: 2094670064}
@@ -6848,6 +6848,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pools:
+  - tag: Default
+    prefab: {fileID: 3120305801269310451, guid: 692c271584a540c4b817df5bb30147ee, type: 3}
+    size: 5
   - tag: Default
     prefab: {fileID: 3120305801269310451, guid: 692c271584a540c4b817df5bb30147ee, type: 3}
     size: 5
