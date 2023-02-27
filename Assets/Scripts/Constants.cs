@@ -16,5 +16,6 @@ public static class Constants
     public static string MONSTER_DEAD = "Dead";
     public static string MONSTER_IDLE = "Idle";
     public static string MONSTER_ATTACK = "Attack";
+    public static string TOWER_DAMAGE = "Damage";    
     #endregion
 }

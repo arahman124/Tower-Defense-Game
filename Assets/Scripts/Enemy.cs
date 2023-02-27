@@ -14,11 +14,12 @@ public class Enemy : MonoBehaviour
     private float m_speed = 2f;
 
     //Variable for the position that the enemy moves towards
-    private Transform m_target;
+    private Tower m_target;
     //Holds the initial health of the monster
     [SerializeField] private float m_maxHealth;
     //Holds the changing health (current) of the monster
     [SerializeField] private float m_currentHealth;
+    [SerializeField] private float m_dps;
 
     //Holds the position of the health bar
     [SerializeField] private Transform m_healthBarLocation;
@@ -159,7 +160,7 @@ public class Enemy : MonoBehaviour
 
         State = EnemyState.Walking;
 
-        Vector2 walkDirection = m_target.position - transform.position;
+        Vector2 walkDirection = m_target.transform.position - transform.position;
         if (walkDirection.x < 0)
         {
             Vector3 localScale = transform.localScale;
@@ -175,11 +176,16 @@ public class Enemy : MonoBehaviour
         {
             case EnemyState.Walking:
                 //Transforms/changes position of the enemy such that it moves towards the given position
-                transform.position = Vector2.MoveTowards(transform.position, m_target.position, m_speed * Time.deltaTime);
+                transform.position = Vector2.MoveTowards(transform.position, m_target.transform.position, m_speed * Time.deltaTime);
                 break;
 
             case EnemyState.Idle:
-                // TODO: SET UP TIMER FOR ATTACKING THE TOWER
+                m_cooldownTimer -= Time.deltaTime;
+
+                if (m_atTower && m_cooldownTimer <= 0f)
+                {
+                    State = EnemyState.Attack;
+                }
                 break;
             case EnemyState.Hurt:
                 //Timer counts down
@@ -207,6 +213,18 @@ public class Enemy : MonoBehaviour
         m_animator.SetTrigger(Constants.MONSTER_IDLE);
     }
 
+    public void OnAttackTower()
+    {
+        m_target.TakeDamage(m_dps);
+
+        // TODO: Play SFX
+    }
+
+    public void OnAttackFinished()
+    {
+        State = EnemyState.Idle;
+    }
+
     //Late update is called after the update function has finished at each frame
     private void LateUpdate()
     {
@@ -215,7 +233,7 @@ public class Enemy : MonoBehaviour
     }
 
     //Method for setting the target that the enemy moves towards
-    public void SetTarget(Transform target)
+    public void SetTarget(Tower target)
     {
         //sets the target to move towards as the given target from the spawner script
         m_target = target;
@@ -243,7 +261,8 @@ public class Enemy : MonoBehaviour
     {
         if (collision.gameObject.CompareTag(Constants.TOWER_TAG))
         {
-            State = EnemyState.Idle;
+            Debug.Log("AT THE TOWER");
+            State = EnemyState.Attack;
             m_atTower = true;
         }
     }

@@ -171,6 +171,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_maxHealth: 100
   m_currentHealth: 0
+  m_dps: 70
   m_healthBarLocation: {fileID: 6820437932606875390}
   m_cooldownDuration: 2
 --- !u!114 &3871366921515537086

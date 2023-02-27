@@ -5,7 +5,7 @@ using UnityEngine;
 public class Spawner : MonoBehaviour
 {
     //Variable to hold the tower object
-    [SerializeField] private GameObject Tower;
+    [SerializeField] private Tower Tower;
     //Variable to hold list of enemy types that could be spawned
     [SerializeField] private List<GameObject> m_enemyList;
     //List of the different potential spawnpoints
@@ -53,7 +53,7 @@ public class Spawner : MonoBehaviour
         GameObject enemy = Instantiate(m_enemyList[Random.Range(0, m_enemyList.Count)], spawnPoint.position, Quaternion.identity);
         //GameObject enemy = ObjectPooling.getInstance().SpawnFromPool("Default", spawnPoint.position, Quaternion.identity);
         //Uses the method from the Enemy Script to make the enemy move towards the tower
-        enemy.GetComponent<Enemy>().SetTarget(Tower.transform);
+        enemy.GetComponent<Enemy>().SetTarget(Tower);
         //Sets the variable to true
         hasSpawned = true;
         //Sets a delay before the function is called again
