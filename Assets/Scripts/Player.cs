@@ -11,6 +11,8 @@ public class Player : MonoBehaviour
     [SerializeField] private TextMeshProUGUI m_pointsText;
     [SerializeField] private TextMeshProUGUI m_goldText;
 
+    [SerializeField] private Weapon m_weapon;
+
     public int Points 
     { 
         get => m_points; 
@@ -47,7 +49,11 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        //Fires the weapon when LMC
+        if (Input.GetMouseButtonDown(0))
+        {
+            m_weapon.Fire();
+        }
     }
 
     public void AddPoints(int pointsToAdd)

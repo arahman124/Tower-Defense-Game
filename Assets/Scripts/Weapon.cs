@@ -9,6 +9,10 @@ public class Weapon : MonoBehaviour
     [SerializeField] public float launchForce;
     //Place where arrow is shot from
     [SerializeField] public Transform shotPoint;
+
+    [SerializeField] private float m_shotCooldown;
+    private float m_coolDownTimer;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -17,6 +21,8 @@ public class Weapon : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        m_coolDownTimer -= Time.deltaTime;
+
         //Position of crossbow and mouse
         Vector2 crossbowPosition = transform.position;
         Vector2 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -24,17 +30,17 @@ public class Weapon : MonoBehaviour
         Vector2 direction = mousePosition - crossbowPosition;
         //Sets default direction to looking right
         transform.right = direction;
-        //Fires the weapon when LMC
-        if (Input.GetMouseButtonDown(0))
-        {
-            Fire();
-        }
     }
-    private void Fire()
+    public void Fire()
     {
-        //Instantiates a new arrow
-        GameObject newArrow = Instantiate(arrow, shotPoint.position, shotPoint.rotation);
-        //Gives the arrow a force
-        newArrow.GetComponent<Rigidbody2D>().velocity = transform.right * launchForce;
+        if (m_coolDownTimer < 0)
+        {
+            //Instantiates a new arrow
+            GameObject newArrow = Instantiate(arrow, shotPoint.position, shotPoint.rotation);
+            //Gives the arrow a force
+            newArrow.GetComponent<Rigidbody2D>().velocity = transform.right * launchForce;
+
+            m_coolDownTimer = m_shotCooldown;
+        }
     }
 }
