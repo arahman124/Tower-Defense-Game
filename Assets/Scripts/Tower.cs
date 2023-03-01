@@ -15,7 +15,7 @@ public class Tower : MonoBehaviour
             // TODO: Update healthbar
             m_healthBarSlider.value = value / m_maxHealth;
 
-            float percentage = value / m_maxHealth * 100f;
+            float percentage = Mathf.Max(0, value / m_maxHealth * 100f);
 
             if (percentage < 75f)
             {
@@ -33,7 +33,7 @@ public class Tower : MonoBehaviour
             {
                 m_healthBarImage.color = m_damageColours[4];
             }
-            if(percentage < 0f)
+            if(percentage <= 0f)
             {
                 m_healthBarImage.gameObject.SetActive(false);
                 // TODO: GAME OVER inside some sort of GameManager script that has references to the UI and stuff
