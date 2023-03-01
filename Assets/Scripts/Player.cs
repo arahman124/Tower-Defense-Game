@@ -11,7 +11,11 @@ public class Player : MonoBehaviour
     [SerializeField] private TextMeshProUGUI m_pointsText;
     [SerializeField] private TextMeshProUGUI m_goldText;
 
-    public int Points { get => m_points; set
+    public int Points 
+    { 
+        get => m_points; 
+
+        set
         {
             m_points = value;
 
@@ -20,7 +24,11 @@ public class Player : MonoBehaviour
         }
     }
 
-    public int Gold { get => m_gold; set
+    public int Gold 
+    { 
+        get => m_gold; 
+
+        set
         {
             m_gold = value;
 

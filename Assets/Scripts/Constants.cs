@@ -16,6 +16,10 @@ public static class Constants
     public static string MONSTER_DEAD = "Dead";
     public static string MONSTER_IDLE = "Idle";
     public static string MONSTER_ATTACK = "Attack";
-    public static string TOWER_DAMAGE = "Damage";    
+    public static string TOWER_DAMAGE = "Damage";
+    #endregion
+
+    #region PLAYERPREF_NAMES
+    public static string PLAYER_HIGH_SCORE = "HighScore";
     #endregion
 }

@@ -36,9 +36,8 @@ public class Tower : MonoBehaviour
             if(percentage <= 0f)
             {
                 m_healthBarImage.gameObject.SetActive(false);
-                // TODO: GAME OVER inside some sort of GameManager script that has references to the UI and stuff
-                Time.timeScale = 0f;
-                Debug.Log("Game Over");
+
+                GameManager.GetInstance().GameOver();
             }
 
             m_health = value;
