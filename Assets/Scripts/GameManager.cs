@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -9,6 +10,9 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] private Player m_player;
     [SerializeField] private TextMeshProUGUI m_highScoreText;
+
+    [SerializeField] private GameObject m_gameOverHUD;
+    [SerializeField] private GameObject m_gameHUD;
 
     private bool m_wasNewHighScore = false;
 
@@ -31,6 +35,11 @@ public class GameManager : MonoBehaviour
         {
             m_highScoreText.text = $"HiScore: {PlayerPrefs.GetInt(Constants.PLAYER_HIGH_SCORE):00000}";
         }
+
+        m_gameHUD.SetActive(true);
+        m_gameOverHUD.SetActive(false);
+
+        Time.timeScale = 1f;
     }
 
     // Update is called once per frame
@@ -46,6 +55,12 @@ public class GameManager : MonoBehaviour
         SaveHighScore(m_player.Points);
 
         Debug.Log("Game Over");
+
+        // TODO: Tell the object pooler to tell the enemies to hide their hearts
+
+
+        m_gameHUD.SetActive(false);
+        m_gameOverHUD.SetActive(true);
     }
 
     private void SaveHighScore(int playerScore)
@@ -65,5 +80,10 @@ public class GameManager : MonoBehaviour
         {
             PlayerPrefs.SetInt(Constants.PLAYER_HIGH_SCORE, playerScore);
         }
+    }
+
+    public void RestartLevel()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 }
