@@ -21,6 +21,9 @@ public class Enemy : MonoBehaviour
     [SerializeField] private float m_currentHealth;
     [SerializeField] private float m_dps;
 
+    public int GoldToAward;
+    public int PointsToAward;
+
     //Holds the position of the health bar
     [SerializeField] private Transform m_healthBarLocation;
 
@@ -28,6 +31,8 @@ public class Enemy : MonoBehaviour
     [SerializeReference] private float m_cooldownDuration;
     //Holds the variable for the timer of the cooldown
     private float m_cooldownTimer;
+
+    private Player m_player;
 
     //Holds the variable for health
     public float Health
@@ -50,6 +55,10 @@ public class Enemy : MonoBehaviour
                 GetComponent<BoxCollider2D>().enabled = false;
                 //Destroys the game object after 1.5 seconds
                 Destroy(gameObject, 1.5f);
+
+                // Award the player points and gold
+                m_player.AddGold(GoldToAward);
+                m_player.AddPoints(PointsToAward);
             }
 
             //Holds the total number of hearts that the monster has
@@ -134,8 +143,6 @@ public class Enemy : MonoBehaviour
     // TODO - Wrap every animator.SetTrigger in a new function that calls ResetAnimationTriggers before setting the trigger
     private void ResetAnimationTriggers()
     {
-        // Unity is stupid and gets confused if triggers get set at the same time... 
-        // We want to clear them every time we set one
         foreach (AnimatorControllerParameter param in m_animator.parameters)
         {
             if (param.type == AnimatorControllerParameterType.Trigger)
@@ -205,6 +212,11 @@ public class Enemy : MonoBehaviour
                 break;
         }
 
+    }
+
+    public void SetPlayerRef(Player player)
+    {
+        m_player = player;
     }
 
     //When the hurt animation is done, it goes back to idle animation

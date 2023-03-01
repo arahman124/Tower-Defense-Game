@@ -172,6 +172,8 @@ MonoBehaviour:
   m_maxHealth: 100
   m_currentHealth: 0
   m_dps: 50
+  GoldToAward: 5
+  PointsToAward: 10
   m_healthBarLocation: {fileID: 920677214890531523}
   m_cooldownDuration: 1.5
 --- !u!114 &6184742606377739524

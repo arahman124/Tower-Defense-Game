@@ -11,9 +11,11 @@ public class Spawner : MonoBehaviour
     //List of the different potential spawnpoints
     [SerializeField] private List<Transform> m_spawnPoints;
     //A variable for the time between each spawning
-    [SerializeField] private float spawnDelay;
+    [SerializeField] private float m_spawnDelay;
     //Boolean variable for when an individual monster is spawned
     private bool hasSpawned;
+
+    [SerializeField] private Player m_player;
 
     ObjectPooling ObjectPooling;
 
@@ -54,10 +56,11 @@ public class Spawner : MonoBehaviour
         //GameObject enemy = ObjectPooling.getInstance().SpawnFromPool("Default", spawnPoint.position, Quaternion.identity);
         //Uses the method from the Enemy Script to make the enemy move towards the tower
         enemy.GetComponent<Enemy>().SetTarget(Tower);
+        enemy.GetComponent<Enemy>().SetPlayerRef(m_player);
         //Sets the variable to true
         hasSpawned = true;
         //Sets a delay before the function is called again
-        yield return new WaitForSeconds(spawnDelay);
+        yield return new WaitForSeconds(m_spawnDelay);
         //Sets the variable back to false
         hasSpawned = false;
     }
