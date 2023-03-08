@@ -1,4 +1,4 @@
-Wave,NumberOfSkeleton,NumberOfGoblins,NumberOfBoss,SpawnDelay
+﻿Wave,NumberOfSkeleton,NumberOfGoblins,NumberOfBoss,SpawnDelay
 0,3,3,0,4
 1,8,5,0,4
 2,10,6,0,3
