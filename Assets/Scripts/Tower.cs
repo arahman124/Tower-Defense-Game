@@ -37,7 +37,7 @@ public class Tower : MonoBehaviour
             {
                 m_healthBarImage.gameObject.SetActive(false);
 
-                GameManager.GetInstance().GameOver();
+                //GameManager.GetInstance().GameOver();
             }
 
             m_health = value;
@@ -46,13 +46,20 @@ public class Tower : MonoBehaviour
         }
     }
 
+    //Variable for the max health the tower can have
     [SerializeField] private float m_maxHealth;
+    //Variable for the current health of the tower
     private float m_health;
+    //Reference to the animator
     private Animator m_animator;
 
+    //Variable for the text of the health bar - title
     [SerializeField] private TextMeshProUGUI m_healthBarText;
+    //Variable for the slider of the health bar itself
     [SerializeField] private Slider m_healthBarSlider;
+    //Variable for the image of the health bar attached to the slider
     [SerializeField] private Image m_healthBarImage;
+    //List of colours that the bar can change to - changed in inspector
     [SerializeField] private List<Color> m_damageColours;
 
 
@@ -62,6 +69,7 @@ public class Tower : MonoBehaviour
         Health = m_maxHealth;
         m_healthBarImage.color = m_damageColours[0];
 
+        //Stores the animator of the current object the script is attached to for further manipulation
         m_animator = GetComponent<Animator>();
     }
 
