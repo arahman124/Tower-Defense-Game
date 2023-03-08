@@ -10,10 +10,15 @@ using UnityEngine.UIElements;
 [RequireComponent(typeof(UIDocument), typeof(Animator))]
 public class Enemy : MonoBehaviour
 {
+    public enum EnemyType
+    {
+        Goblin, Skeleton, Boss
+    }
+
     //variable to hold speed of monsters
     private float m_speed = 2f;
 
-    //Variable for the position that the enemy moves towards
+    //Variable for the position that the enemy moves towards - references Tower to access tower script
     private Tower m_target;
     //Holds the initial health of the monster
     [SerializeField] private float m_maxHealth;
@@ -21,6 +26,7 @@ public class Enemy : MonoBehaviour
     [SerializeField] private float m_currentHealth;
     [SerializeField] private float m_dps;
 
+    //Variables for the amount of gold and points that each monster is worth
     public int GoldToAward;
     public int PointsToAward;
 
@@ -32,6 +38,7 @@ public class Enemy : MonoBehaviour
     //Holds the variable for the timer of the cooldown
     private float m_cooldownTimer;
 
+    //Reference to player
     private Player m_player;
 
     //Holds the variable for health
@@ -54,7 +61,7 @@ public class Enemy : MonoBehaviour
                 //Disables the box collider
                 GetComponent<BoxCollider2D>().enabled = false;
                 //Destroys the game object after 1.5 seconds
-                Destroy(gameObject, 1.5f);
+                StartCoroutine("Die");
 
                 // Award the player points and gold
                 m_player.AddGold(GoldToAward);
@@ -79,6 +86,20 @@ public class Enemy : MonoBehaviour
                 }
             }
         }
+    }
+
+    private IEnumerator Die()
+    {
+        yield return new WaitForSeconds(1.5f);
+
+        gameObject.SetActive(false);
+    }
+
+   
+    public void Reset(float dps, float speed, float health)
+    {
+        m_currentHealth = health;
+        gameObject.SetActive(true);
     }
 
 
@@ -154,8 +175,10 @@ public class Enemy : MonoBehaviour
 
     void Start()
     {
+        //Animator component for animation manipulation
         m_animator = GetComponent<Animator>();
 
+        //Variable for the main camera
         m_mainCamera = Camera.main;
         //Queries
         m_healthBar = GetComponent<UIDocument>().rootVisualElement.Q("Container");
@@ -164,10 +187,12 @@ public class Enemy : MonoBehaviour
         SetHealthBarPosition();
 
         m_currentHealth = m_maxHealth;
-
+        //Starts walking animation
         State = EnemyState.Walking;
-
+        //Direction facing - negative is right side and positive is left side
         Vector2 walkDirection = m_target.transform.position - transform.position;
+
+        //If the monster is facing the wrong way (spawns on the right) then it flips the sprite
         if (walkDirection.x < 0)
         {
             Vector3 localScale = transform.localScale;
@@ -187,8 +212,10 @@ public class Enemy : MonoBehaviour
                 break;
 
             case EnemyState.Idle:
+                //Cooldown counts down
                 m_cooldownTimer -= Time.deltaTime;
 
+                //Starts attack animation
                 if (m_atTower && m_cooldownTimer <= 0f)
                 {
                     State = EnemyState.Attack;
@@ -198,6 +225,7 @@ public class Enemy : MonoBehaviour
                 //Timer counts down
                 m_cooldownTimer -= Time.deltaTime;
 
+                //Once cooldown is done, starts a different animation depending on where they are
                 if (m_cooldownTimer <= 0f)
                 {
                     if (m_atTower)
@@ -214,6 +242,7 @@ public class Enemy : MonoBehaviour
 
     }
 
+    //Sets a reference to the player to be used in script
     public void SetPlayerRef(Player player)
     {
         m_player = player;
@@ -225,13 +254,15 @@ public class Enemy : MonoBehaviour
         m_animator.SetTrigger(Constants.MONSTER_IDLE);
     }
 
+    //Takes damage away from tower
     public void OnAttackTower()
     {
         m_target.TakeDamage(m_dps);
 
         // TODO: Play SFX
     }
-
+    
+    //Once attack animation is over, goes back to the idle animation
     public void OnAttackFinished()
     {
         State = EnemyState.Idle;
@@ -287,7 +318,7 @@ public class Enemy : MonoBehaviour
         public override void OnInspectorGUI()
         {
             DrawDefaultInspector();
-
+            //If the button is pressed in the inspector, damage is dealt to the enemy that was hit
             if (GUILayout.Button("DAMAGE ENEMY"))
             {
                 ((Enemy)target).Health -= 20f;
@@ -295,6 +326,7 @@ public class Enemy : MonoBehaviour
         }
     }
 
+    //Rounds a number to the nearest multiple of given parameters
     private int RoundUp(int numToRound, int multiple)
     {
         // Code taken from https://stackoverflow.com/questions/3407012/rounding-up-to-the-nearest-multiple-of-a-number

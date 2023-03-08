@@ -4,6 +4,10 @@ public static class Constants
     //Variable to hold tag for the ground
     public static string GROUND_TAG = "Ground";
     public static string TOWER_TAG = "Tower";
+
+    public static string BOSS_TAG = "Boss";
+    public static string GOBLIN_TAG = "Goblin";
+    public static string SKELETON_TAG = "Skeleton";
     #endregion
 
     #region COLLISION_LAYERS
