@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class ObjectPooling : MonoBehaviour
 {
-  
 
     [System.Serializable]
     //Class template for each pool that can be created - contains all relevant variables
@@ -28,42 +27,44 @@ public class ObjectPooling : MonoBehaviour
 
     public static ObjectPooling getInstance()
     {
-        if (Instance == null)
-        {
-            Instance = new ObjectPooling();
-            Instance.RegenPools();
-        }
+        
         return Instance;
     }
 
-    //private void Awake()
-    //{
-    //    Instance = this;
-    //}
+    private void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+            RegenPools();
+        }
+    }
+    
     #endregion
 
-    // Start is called before the first frame update
-    //void Start()
-    //{
-    //    //Creates a new variable with a new dictionary
-    //    poolDictionary = new Dictionary<string, Queue<GameObject>>();
 
-    //    foreach (Pool pool in pools)
-    //    {
-    //        Queue<GameObject> objectPool = new Queue<GameObject>();
-    //        //List<GameObject> pooledObjects = new List<GameObject>();
+    //Start is called before the first frame update
+    void Start()
+    {
+        //Creates a new variable with a new dictionary
+        poolDictionary = new Dictionary<string, Queue<GameObject>>();
 
-    //        for (int i = 0; i < pool.size; i++)
-    //        {
-    //            GameObject obj = Instantiate(pool.prefab);
-    //            obj.SetActive(false);
-    //            objectPool.Enqueue(obj);
-    //            //pooledObjects.Add(obj);
-    //        }
+        foreach (Pool pool in pools)
+        {
+            Queue<GameObject> objectPool = new Queue<GameObject>();
+            //List<GameObject> pooledObjects = new List<GameObject>();
 
-    //        poolDictionary.Add(pool.tag, objectPool);
-    //    }
-    //}
+            for (int i = 0; i < pool.size; i++)
+            {
+                GameObject obj = Instantiate(pool.prefab);
+                obj.SetActive(false);
+                objectPool.enqueue(obj);
+                //pooledObjects.Add(obj);
+            }
+
+            poolDictionary.Add(pool.tag, objectPool);
+        }
+    }
 
     public GameObject SpawnFromPool(string tag, Vector3 position, Quaternion rotation)
     {
@@ -72,10 +73,12 @@ public class ObjectPooling : MonoBehaviour
         {
             //If not then the error is displayed to console
             Debug.LogWarning("Pool with tag" + tag + "doesn't exist.");
+            Debug.DebugBreak();
             return null;
         }
+
         //A individual object within the queue is accessed
-        GameObject objectToSpawn = poolDictionary[tag].Dequeue();
+        GameObject objectToSpawn = poolDictionary[tag].dequeue().Data;
 
         //Sets the object as active - visible on scene
         objectToSpawn.SetActive(true);
@@ -84,7 +87,7 @@ public class ObjectPooling : MonoBehaviour
         objectToSpawn.transform.rotation = rotation;
 
         //Adds the object back to the queue such that it can recycled
-        poolDictionary[tag].Enqueue(objectToSpawn);
+        poolDictionary[tag].enqueue(objectToSpawn);
 
         //Just a safety procedure to return the individual object enemy
         return objectToSpawn;
@@ -110,7 +113,7 @@ public class ObjectPooling : MonoBehaviour
                 //Sets the object as an inactive object - invisible
                 obj.SetActive(false);
                 //Adds the object to the queue of pooledObjects
-                objectPool.Enqueue(obj);
+                objectPool.enqueue(obj);
                 //pooledObjects.Add(obj);
             }
             //The pool of instantiated objects are kept in the queue stored in the dictionary

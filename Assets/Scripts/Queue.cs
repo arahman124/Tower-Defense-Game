@@ -2,56 +2,54 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Queue<T> : MonoBehaviour
+public class Queue<T>
 {
-
-
     //Class for an individual node in the linked list - <T> is called generics - allows for any data type to be used when stated in other scripts
     public class Node<T>
     {
         //Variable to hold the data (game object) and the position of the next item
-        public T data;
+        public T Data;
         //Initially set to null - look below
-        public Node<T> next;
+        public Node<T> Next;
 
 
         //Constructor - creates new node
         public Node(T data)
         {
-            this.data = data;
-            this.next = null;
+            Data = data;
+            Next = null;
         }
     }
 
     //Front and rear pointers for the queue
-    public Node<T> front;
-    public Node<T> rear;
+    public Node<T> Front;
+    public Node<T> Rear;
 
     //Initalise queue - set both front and rear pointer to null
     public Queue()
     {
-        this.front = null;
-        this.rear = null;
+        Front = null;
+        Rear = null;
     }
 
     //Dequeue function that removes an item from the end of the list
     public Node<T> dequeue()
     {
 
-        if (this.front == null)
+        if (Front == null)
         {
             Debug.Log("Queue is empty");
             return null;
         }
 
 
-        if (this.front == null)
+        if (Front == null)
         {
-            this.rear = null;
+            Rear = null;
         }
 
-        this.front = this.front.next;
-        return this.front;
+        Front = Front.Next;
+        return Front;
     }
 
 
@@ -62,15 +60,15 @@ public class Queue<T> : MonoBehaviour
         Node<T> newData = new Node<T>(data);
 
         //Checks if the 
-        if (this.rear == null)
+        if (Rear == null)
         {
-            this.front = newData;
-            this.rear = newData;
+            Front = newData;
+            Rear = newData;
         }
         else
         {
-            this.rear.next = newData;
-            this.rear = newData;
+            Rear.Next = newData;
+            Rear = newData;
         }
 
     }

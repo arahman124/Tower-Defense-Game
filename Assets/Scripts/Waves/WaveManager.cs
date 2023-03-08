@@ -22,63 +22,121 @@ public class WaveManager : MonoBehaviour
             SpawnDelay = spawnDelay;
         }
 
-        readonly int NumSkeleton;
-        readonly int NumGoblin;
-        readonly int NumBoss;
-        readonly float SpawnDelay;
+        public readonly int NumSkeleton;
+        public readonly int NumGoblin;
+        public readonly int NumBoss;
+        public readonly float SpawnDelay;
     }
 
-    private int m_currentWave;
+    // Hack to start at 0 
+    private int m_currentWave = -1;
+    private int m_currentSkeletonCount;
+    private int m_currentGoblinCount;
+    private int m_currentBossCount;
 
     private List<Wave> m_waves;
 
-    public Wave[] waves;
-    private int nextWave = 0;
+    private float m_currentSpawnDelay;
+    private float m_spawnDelayCountdown;
 
-    public float timeBetweenWaves = 5f;
-    public float waveCountdown;
+    public SpawnerState m_state = SpawnerState.COUNTING;
 
-    public SpawnerState state = SpawnerState.COUNTING;
+    //Variable to hold the tower object
+    [SerializeField] private Tower Tower;
+
+    //List of the different potential spawnpoints
+    [SerializeField] private List<Transform> m_spawnPoints;
+
+    [SerializeField] private Player m_player;
 
     private void Start()
     {
-        waveCountdown = timeBetweenWaves;
         ReadWaveDataFromCSV();
     }
 
     private void Update()
     {
-        if (waveCountdown <= 0)
+        if (m_state != SpawnerState.SPAWNING)
         {
-            if (state != SpawnerState.SPAWNING)
+            return;
+        }
+
+        if (m_spawnDelayCountdown <= 0)
+        {
+            if (m_currentBossCount > 0 || m_currentSkeletonCount > 0 || m_currentGoblinCount > 0)
             {
-                //Start the wave
-                StartCoroutine(SpawnWave(waves[nextWave]));
+                // If we still have stuff to spawn, then we want to reset the timer
+                m_spawnDelayCountdown = m_currentSpawnDelay;
+            }
+
+            //Start the wave
+            while(m_currentBossCount > 0 || m_currentSkeletonCount > 0 || m_currentGoblinCount > 0)
+            {
+                int random = Random.Range(0, 3);
+
+                if((Enemy.EnemyType)random == Enemy.EnemyType.Boss)
+                {
+                    if(m_currentBossCount > 0)
+                    {
+                        m_currentBossCount--;
+                        SpawnEnemy(Enemy.EnemyType.Boss);
+                        break;
+                    }
+                }
+                else if((Enemy.EnemyType)random == Enemy.EnemyType.Goblin)
+                {
+                    if (m_currentGoblinCount > 0)
+                    {
+                        m_currentGoblinCount--;
+                        SpawnEnemy(Enemy.EnemyType.Goblin);
+                        break;
+                    }
+                }
+                else
+                {
+                    if (m_currentSkeletonCount > 0)
+                    {
+                        m_currentSkeletonCount--;
+                        SpawnEnemy(Enemy.EnemyType.Skeleton);
+                        break;
+                    }
+                }
+            }
+
+            if(HasEverythingSpawned())
+            {
+                m_state = SpawnerState.WAITING;
             }
         }
         else
         {
-            waveCountdown -= Time.deltaTime;
+            m_spawnDelayCountdown -= Time.deltaTime;
         }
     }
 
-    IEnumerator SpawnWave(Wave _wave)
+    public void OnStartWave()
     {
-        state = SpawnerState.SPAWNING;
+        m_currentWave++;
 
-        //spawn
+        m_state = SpawnerState.SPAWNING;
 
-        state = SpawnerState.WAITING;
+        Wave newWave = m_waves[m_currentWave];
 
-
-        yield break;
+        m_currentSkeletonCount = newWave.NumSkeleton;
+        m_currentGoblinCount = newWave.NumGoblin;
+        m_currentBossCount = newWave.NumBoss;
+        m_currentSpawnDelay = newWave.SpawnDelay;
+        m_spawnDelayCountdown = m_currentSpawnDelay;
     }
 
-    void SpawnEnemy(Transform _enemy)
+    public int GetMonsterCount()
     {
-        //Spawn enemy - object pooling implementation occurs here
-        Debug.Log("Spawning Enemy");
+        return m_currentBossCount + m_currentGoblinCount + m_currentSkeletonCount;
+    }
 
+    public bool HasEverythingSpawned()
+    {
+        return m_currentBossCount == 0 && m_currentSkeletonCount == 0 && m_currentGoblinCount == 0;
     }
 
     private void ReadWaveDataFromCSV()
@@ -101,5 +159,47 @@ public class WaveManager : MonoBehaviour
 
             m_waves.Add(new Wave(numSkeletons, numGoblins, numBosses, spawnDelay));
         }
+    }
+
+    private void SpawnEnemy(Enemy.EnemyType enemyType)
+    {
+        //picks a random spawnpoint randomly from the list of spawnpoints
+        Transform spawnPoint = m_spawnPoints[Random.Range(0, m_spawnPoints.Count)];
+        //Outputs the spawnpoint that the monster was spawned from - testing
+        Debug.Log(spawnPoint.gameObject.name);
+
+        GameObject enemyObject = null;
+
+        switch (enemyType)
+        {
+            case Enemy.EnemyType.Boss:
+                enemyObject = ObjectPooling.getInstance().SpawnFromPool(Constants.BOSS_TAG, spawnPoint.position, Quaternion.identity);
+                break;
+            case Enemy.EnemyType.Goblin:
+                enemyObject = ObjectPooling.getInstance().SpawnFromPool(Constants.GOBLIN_TAG, spawnPoint.position, Quaternion.identity);
+                break;
+            case Enemy.EnemyType.Skeleton:
+                enemyObject = ObjectPooling.getInstance().SpawnFromPool(Constants.SKELETON_TAG, spawnPoint.position, Quaternion.identity);
+                break;
+        }
+
+        if (enemyObject == null)
+        {
+            Debug.Log("EEK!");
+        }
+
+        //GameObject enemy = ObjectPooling.getInstance().SpawnFromPool("Default", spawnPoint.position, Quaternion.identity);
+        //Uses the method from the Enemy Script to make the enemy move towards the tower
+
+        // TODO: Read in from another file for the stats per monster per wave, pass this info into Reset
+        // Either do it as a struct or as separate floats 
+        enemyObject.GetComponent<Enemy>().Reset();
+        enemyObject.GetComponent<Enemy>().SetTarget(Tower);
+        enemyObject.GetComponent<Enemy>().SetPlayerRef(m_player);
+    }
+
+    public int GetWaveCount()
+    {
+        return m_currentWave + 1;
     }
 }
