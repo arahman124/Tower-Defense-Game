@@ -59,7 +59,7 @@ public class Queue<T>
         //Creates a node
         Node<T> newData = new Node<T>(data);
 
-        //Checks if the 
+        //Checks if 
         if (Rear == null)
         {
             Front = newData;
