@@ -12,6 +12,9 @@ public class GameManager : MonoBehaviour
     //Variable to reference the high score text
     [SerializeField] private TextMeshProUGUI m_highScoreText;
 
+    private CrossBow m_crossbow;
+    private Rifle m_rifle;
+
     //Reference to the game over screen
     [SerializeField] private GameObject m_gameOverHUD;
     [SerializeField] private GameObject m_gameHUD;
@@ -21,13 +24,13 @@ public class GameManager : MonoBehaviour
 
     //List in inspector for the different upgrades of crossbow - look in stats for the upgrade features
     [SerializeField] List<Stats> m_crossBowStats;
-    //Initial level of crossbow set to element 0 in the list
+    //Initial level of crossbow set to element 0 in the list - CHANGE BACK
     private int m_crossbowUpgradeLevel = -1;
 
     //List in inspector for the different upgrades of rifle - look in stats for the upgrade features
     [SerializeField] List<Stats> m_rifleStats;
-    private int m_rifleUpgradeLevel;
-    private bool m_isRifleUnlocked;
+    private int m_rifleUpgradeLevel = -1;
+    private bool m_isRifleUnlocked = false;
 
     //Instance for the singleton pattern
     private static GameManager m_instance;
@@ -70,7 +73,7 @@ public class GameManager : MonoBehaviour
         Time.timeScale = 1f;
 
         // TODO: REMOVE 
-        //m_player.Gold = 1000;
+        m_player.Gold = 1000;
     }
 
     // Update is called once per frame
@@ -159,6 +162,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    //Method attached to button so that the next wave is triggered when the user wants
     public void OnNextWavePressed()
     {
         m_waveManager.OnStartWave();
