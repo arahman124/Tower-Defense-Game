@@ -16,7 +16,7 @@ public class Enemy : MonoBehaviour
     }
 
     //variable to hold speed of monsters
-    [SerializeField]private float m_speed = 2f;
+    private float m_speed = 2f;
 
     //Variable for the position that the enemy moves towards - references Tower to access tower script
     private Tower m_target;
@@ -63,7 +63,6 @@ public class Enemy : MonoBehaviour
                 //Destroys the game object after 1.5 seconds
                 StartCoroutine("Die");
 
-
                 // Award the player points and gold
                 m_player.AddGold(GoldToAward);
                 m_player.AddPoints(PointsToAward);
@@ -97,9 +96,9 @@ public class Enemy : MonoBehaviour
     }
 
    
-    public void Reset()
+    public void Reset(float dps, float speed, float health)
     {
-        //m_currentHealth = health;
+        m_currentHealth = health;
         gameObject.SetActive(true);
     }
 
@@ -185,7 +184,7 @@ public class Enemy : MonoBehaviour
         m_healthBar = GetComponent<UIDocument>().rootVisualElement.Q("Container");
         m_hearts = m_healthBar.Children().ToArray();
 
-        
+        SetHealthBarPosition();
 
         m_currentHealth = m_maxHealth;
         //Starts walking animation
@@ -200,9 +199,6 @@ public class Enemy : MonoBehaviour
             localScale.x *= -1;
             transform.localScale = localScale;
         }
-        
-        SetHealthBarPosition();
-
     }
 
     // Update is called once per frame
