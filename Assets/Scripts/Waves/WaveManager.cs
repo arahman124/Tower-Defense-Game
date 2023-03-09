@@ -49,7 +49,6 @@ public class WaveManager : MonoBehaviour
         public readonly int Damage;
         public readonly int Gold;
         public readonly int Points;
-
     }
 
 
@@ -89,9 +88,9 @@ public class WaveManager : MonoBehaviour
     {
         ReadWaveDataFromCSV();
 
-        //m_skeletonStats = ReadStatsDataFromCSV(Enemy.EnemyType.Skeleton);
-        //m_goblinStats = ReadStatsDataFromCSV(Enemy.EnemyType.Goblin);
-        //m_bossStats = ReadStatsDataFromCSV(Enemy.EnemyType.Boss);
+        m_skeletonStats = ReadStatsDataFromCSV(Enemy.EnemyType.Skeleton);
+        m_goblinStats = ReadStatsDataFromCSV(Enemy.EnemyType.Goblin);
+        m_bossStats = ReadStatsDataFromCSV(Enemy.EnemyType.Boss);
     }
 
     private void Update()
@@ -220,17 +219,22 @@ public class WaveManager : MonoBehaviour
 
         GameObject enemyObject = null;
 
+        MonsterStats stats = new MonsterStats();
+
         //Grabs the required enemy type from the queued objects (pool)
         switch (enemyType)
         {
             case Enemy.EnemyType.Boss:
                 enemyObject = ObjectPooling.getInstance().SpawnFromPool(Constants.BOSS_TAG, spawnPoint.position, Quaternion.identity);
+                stats = m_bossStats[m_currentWave];
                 break;
             case Enemy.EnemyType.Goblin:
                 enemyObject = ObjectPooling.getInstance().SpawnFromPool(Constants.GOBLIN_TAG, spawnPoint.position, Quaternion.identity);
+                stats = m_goblinStats[m_currentWave];
                 break;
             case Enemy.EnemyType.Skeleton:
                 enemyObject = ObjectPooling.getInstance().SpawnFromPool(Constants.SKELETON_TAG, spawnPoint.position, Quaternion.identity);
+                stats = m_skeletonStats[m_currentWave];
                 break;
         }
 
@@ -246,7 +250,7 @@ public class WaveManager : MonoBehaviour
 
         // TODO: Read in from another file for the stats per monster per wave, pass this info into Reset
         // Either do it as a struct or as separate floats 
-        enemyObject.GetComponent<Enemy>().Reset();
+        enemyObject.GetComponent<Enemy>().Reset(stats);
         enemyObject.GetComponent<Enemy>().SetTarget(Tower);
         enemyObject.GetComponent<Enemy>().SetPlayerRef(m_player);
     }

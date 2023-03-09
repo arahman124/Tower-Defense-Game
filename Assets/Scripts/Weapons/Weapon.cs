@@ -4,11 +4,11 @@ using System.Collections.Generic;
 using UnityEngine;
 public abstract class Weapon : MonoBehaviour
 {
-    //Arrow prefab
+    //Prefab for projectile
     [SerializeField] protected GameObject m_projectile;
-    //Amount of force applied to the arrow
+    //Amount of force applied to the projectile
     [SerializeField] protected float m_launchForce;
-    //Place where arrow is shot from
+    //Place where projectile is shot from
     public Transform shotPoint;
 
     //Protected variable - private variable but accessible to the child classes

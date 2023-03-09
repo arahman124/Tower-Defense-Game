@@ -42,14 +42,10 @@ public class Queue<T>
             return null;
         }
 
-
-        if (Front == null)
-        {
-            Rear = null;
-        }
-
+        Node<T> previousFront = Front;
         Front = Front.Next;
-        return Front;
+
+        return previousFront;
     }
 
 
@@ -59,18 +55,17 @@ public class Queue<T>
         //Creates a node
         Node<T> newData = new Node<T>(data);
 
-        //Checks if the 
-        if (Rear == null)
+        if (Front == null)
         {
             Front = newData;
             Rear = newData;
+            Front.Next = null;
+            Rear.Next = null;
         }
         else
         {
             Rear.Next = newData;
             Rear = newData;
         }
-
     }
-
 }

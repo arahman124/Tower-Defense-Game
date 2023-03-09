@@ -16,7 +16,7 @@ public class Enemy : MonoBehaviour
     }
 
     //variable to hold speed of monsters
-    private float m_speed = 2f;
+    [SerializeField] private float m_speed = 2f;
 
     //Variable for the position that the enemy moves towards - references Tower to access tower script
     private Tower m_target;
@@ -96,10 +96,17 @@ public class Enemy : MonoBehaviour
     }
 
    
-    public void Reset(float dps, float speed, float health)
+    public void Reset(WaveManager.MonsterStats stats)
     {
-        m_currentHealth = health;
+        m_currentHealth = stats.Health;
+        m_speed = stats.Speed;
+        PointsToAward = stats.Points;
+        GoldToAward = stats.Gold;
+
         gameObject.SetActive(true);
+        GetComponent<BoxCollider2D>().enabled = true;
+
+        m_state = EnemyState.Walking;
     }
 
 
@@ -189,6 +196,10 @@ public class Enemy : MonoBehaviour
         m_currentHealth = m_maxHealth;
         //Starts walking animation
         State = EnemyState.Walking;
+    }
+
+    private void Flip()
+    {
         //Direction facing - negative is right side and positive is left side
         Vector2 walkDirection = m_target.transform.position - transform.position;
 
@@ -281,11 +292,18 @@ public class Enemy : MonoBehaviour
         //sets the target to move towards as the given target from the spawner script
         m_target = target;
 
+        Flip();
     }
+
     //Finds the current location of the health bar and updates the new location as the monster moves
     private void SetHealthBarPosition()
     {
-        Vector2 newPosition = RuntimePanelUtils.CameraTransformWorldToPanel(m_healthBar.panel, m_healthBarLocation.position, m_mainCamera);
+        if(m_healthBar.panel == null)
+        {
+            Debug.Log("HEHEHE");
+        }
+
+        Vector2 newPosition = RuntimePanelUtils.CameraTransformWorldToPanel(m_healthBar.panel, m_healthBarLocation.position, Camera.main);
         m_healthBar.transform.position = new Vector2(newPosition.x - m_healthBar.layout.width / 2, newPosition.y);
     }
 

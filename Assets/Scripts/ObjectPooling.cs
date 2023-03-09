@@ -46,24 +46,7 @@ public class ObjectPooling : MonoBehaviour
     //Start is called before the first frame update
     void Start()
     {
-        //Creates a new variable with a new dictionary
-        poolDictionary = new Dictionary<string, Queue<GameObject>>();
-
-        foreach (Pool pool in pools)
-        {
-            Queue<GameObject> objectPool = new Queue<GameObject>();
-            //List<GameObject> pooledObjects = new List<GameObject>();
-
-            for (int i = 0; i < pool.size; i++)
-            {
-                GameObject obj = Instantiate(pool.prefab);
-                obj.SetActive(false);
-                objectPool.enqueue(obj);
-                //pooledObjects.Add(obj);
-            }
-
-            poolDictionary.Add(pool.tag, objectPool);
-        }
+        RegenPools();
     }
 
     public GameObject SpawnFromPool(string tag, Vector3 position, Quaternion rotation)
@@ -110,8 +93,12 @@ public class ObjectPooling : MonoBehaviour
             {
                 //Creates the object (enemy)
                 GameObject obj = Instantiate(pool.prefab);
+
+                obj.name = $"{pool.tag}_{i}";
+
                 //Sets the object as an inactive object - invisible
                 obj.SetActive(false);
+
                 //Adds the object to the queue of pooledObjects
                 objectPool.enqueue(obj);
                 //pooledObjects.Add(obj);
