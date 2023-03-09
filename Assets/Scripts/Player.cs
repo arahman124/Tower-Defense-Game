@@ -97,4 +97,9 @@ public class Player : MonoBehaviour
             Debug.Log("This obviosuly isn't a rifle...");
         }
     }
+
+    public void RifleUnlocked()
+    {
+
+    }
 }

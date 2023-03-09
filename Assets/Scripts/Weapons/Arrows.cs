@@ -6,6 +6,7 @@ public class Arrows : MonoBehaviour
     //Rigidbody variable declared for arrow
     private Rigidbody2D m_rb;
 
+
     [SerializeField] private float m_damage;
 
     // Start is called before the first frame update

@@ -20,7 +20,7 @@ public class CrossBow : Weapon
         UpdateWeapon();
     }
 
-    //Fires the arrow from the crossbow on screen - ovveride function taken from base
+    //Fires the arrow from the crossbow on screen - overide function taken from base
     public override void Fire()
     {
         if (m_coolDownTimer < 0)
