@@ -22,4 +22,26 @@ public class Bullet : MonoBehaviour
     {
         
     }
+
+    //Checks for collisions
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        //Condition that if the bullet hits any object with the ground tag, it is deleted
+        if (collision.gameObject.CompareTag(Constants.GROUND_TAG))
+        {
+            //The bullet is deleted
+            Destroy(gameObject);
+        }
+
+        //Condition that if the bullet hits any object with the ground tag, it is deleted
+        if (collision.gameObject.layer == LayerMask.NameToLayer(Constants.ENEMY_LAYER))
+        {
+            Enemy enemy = collision.gameObject.GetComponent<Enemy>();
+
+            enemy.Health -= m_damage;
+
+            //The bullet is deleted
+            Destroy(gameObject);
+        }
+    }
 }
