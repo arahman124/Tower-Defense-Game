@@ -96,9 +96,8 @@ public class Enemy : MonoBehaviour
     }
 
    
-    public void Reset(float dps, float speed, float health)
+    public void Reset()
     {
-        m_currentHealth = health;
         gameObject.SetActive(true);
     }
 
