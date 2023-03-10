@@ -101,6 +101,8 @@ public class GameManager : MonoBehaviour
 
         Debug.Log("Game Over");
 
+        AudioManager.Instance.musicSource.Stop();
+
         // TODO: Tell the object pooler to tell the enemies to hide their hearts
 
         //Sets the current game HUD as invisible

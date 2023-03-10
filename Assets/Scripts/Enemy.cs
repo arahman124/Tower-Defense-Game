@@ -184,6 +184,7 @@ public class Enemy : MonoBehaviour
                 if (m_atTower && m_cooldownTimer <= 0f)
                 {
                     State = EnemyState.Attack;
+                    AudioManager.Instance.PlaySFX("Attack");
                 }
                 break;
             case EnemyState.Hurt:
@@ -342,6 +343,7 @@ public class Enemy : MonoBehaviour
 
     private IEnumerator Die()
     {
+        AudioManager.Instance.PlaySFX("Death");
         yield return new WaitForSeconds(1.5f);
 
         gameObject.SetActive(false);
