@@ -88,7 +88,7 @@ public class Player : MonoBehaviour
         m_weapon.SetLaunchForce(stats.m_projectileSpeed);
         m_weapon.SetCooldown(stats.m_rateOfFire);
 
-        // A better wya to do it would be to have a readonly enum WeaponType, and then cast based on the WeaponType variable
+        
         try
         {
             ((Rifle)m_weapon).SetAmmo(stats.m_ammoAmount);

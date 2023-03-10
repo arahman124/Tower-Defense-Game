@@ -24,12 +24,14 @@ public class GameManager : MonoBehaviour
 
     //List in inspector for the different upgrades of crossbow - look in stats for the upgrade features
     [SerializeField] List<Stats> m_crossBowStats;
-    //Initial level of crossbow set to element 0 in the list - CHANGE BACK
+    //Initial level of crossbow set to element 0 in the list 
     private int m_crossbowUpgradeLevel = -1;
 
     //List in inspector for the different upgrades of rifle - look in stats for the upgrade features
     [SerializeField] List<Stats> m_rifleStats;
+    //Initial level of rifle set to element 0 in the list
     private int m_rifleUpgradeLevel = -1;
+    //Boolean variable to check is the rifle has been unlocked yet
     private bool m_isRifleUnlocked = false;
 
     //Instance for the singleton pattern
