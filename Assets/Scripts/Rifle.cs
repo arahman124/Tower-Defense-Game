@@ -2,6 +2,7 @@
 
 public class Rifle : Weapon
 {
+    //Maximum ammo of the rifle
     private int m_maxAmmo;
 
 

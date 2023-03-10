@@ -41,6 +41,23 @@ public class Enemy : MonoBehaviour
     //Reference to player
     private Player m_player;
 
+    //Variables for the on-screen display
+    private VisualElement m_healthBar;
+    private VisualElement[] m_hearts;
+
+    //Reference to the main camera as a variable
+    private Camera m_mainCamera;
+
+    //Variable for access of animations
+    private Animator m_animator;
+
+    //Used to access a state from enum and store as variable
+    private EnemyState m_state;
+
+    //Boolean variable to tell if a monster has reached the tower or not
+    private bool m_atTower = false;
+
+
     //Holds the variable for health
     public float Health
     {
@@ -48,6 +65,13 @@ public class Enemy : MonoBehaviour
         get => m_currentHealth;
         set
         {
+            //null check
+            if (m_currentHealth < value)
+            {
+                m_currentHealth = value;
+                return;
+            }
+
             m_currentHealth = value;
 
             //Sets state of animation to hurt
@@ -88,37 +112,6 @@ public class Enemy : MonoBehaviour
         }
     }
 
-    private IEnumerator Die()
-    {
-        yield return new WaitForSeconds(1.5f);
-
-        gameObject.SetActive(false);
-    }
-
-   
-    public void Reset(WaveManager.MonsterStats stats)
-    {
-        m_currentHealth = stats.Health;
-        m_speed = stats.Speed;
-        PointsToAward = stats.Points;
-        GoldToAward = stats.Gold;
-
-        gameObject.SetActive(true);
-        GetComponent<BoxCollider2D>().enabled = true;
-
-        m_state = EnemyState.Walking;
-    }
-
-
-    //Variables for the on-screen display
-    private VisualElement m_healthBar;
-    private VisualElement[] m_hearts;
-
-    //Reference to the main camera as a variable
-    private Camera m_mainCamera;
-
-    //Variable for access of animations
-    private Animator m_animator;
 
     //Different states of animation
     public enum EnemyState
@@ -130,11 +123,7 @@ public class Enemy : MonoBehaviour
         Hurt
     }
 
-    //Used to access a state from enum and store as variable
-    private EnemyState m_state;
 
-    //Boolean variable to tell if a monster has reached the tower or not
-    private bool m_atTower = false;
 
     // We're using a property for the State so that we are able to trigger events when we set the value
     public EnemyState State
@@ -168,49 +157,14 @@ public class Enemy : MonoBehaviour
         }
     }
 
-    // TODO - Wrap every animator.SetTrigger in a new function that calls ResetAnimationTriggers before setting the trigger
-    private void ResetAnimationTriggers()
-    {
-        foreach (AnimatorControllerParameter param in m_animator.parameters)
-        {
-            if (param.type == AnimatorControllerParameterType.Trigger)
-            {
-                m_animator.ResetTrigger(param.name);
-            }
-        }
-    }
+
 
     void Start()
     {
-        //Animator component for animation manipulation
-        m_animator = GetComponent<Animator>();
-
-        //Variable for the main camera
-        m_mainCamera = Camera.main;
-        //Queries
-        m_healthBar = GetComponent<UIDocument>().rootVisualElement.Q("Container");
-        m_hearts = m_healthBar.Children().ToArray();
-
-        SetHealthBarPosition();
-
-        m_currentHealth = m_maxHealth;
-        //Starts walking animation
-        State = EnemyState.Walking;
+        Init();
     }
 
-    private void Flip()
-    {
-        //Direction facing - negative is right side and positive is left side
-        Vector2 walkDirection = m_target.transform.position - transform.position;
 
-        //If the monster is facing the wrong way (spawns on the right) then it flips the sprite
-        if (walkDirection.x < 0)
-        {
-            Vector3 localScale = transform.localScale;
-            localScale.x *= -1;
-            transform.localScale = localScale;
-        }
-    }
 
     // Update is called once per frame
     void Update()
@@ -300,7 +254,7 @@ public class Enemy : MonoBehaviour
     {
         if(m_healthBar.panel == null)
         {
-            Debug.Log("HEHEHE");
+            return;
         }
 
         Vector2 newPosition = RuntimePanelUtils.CameraTransformWorldToPanel(m_healthBar.panel, m_healthBarLocation.position, Camera.main);
@@ -313,8 +267,12 @@ public class Enemy : MonoBehaviour
         // A LINQ expression to get the next visible heart from the healthbar
         VisualElement nextHeart = m_hearts.Where(x => x.visible).LastOrDefault();
 
-        //Sets the next heart as invisible
-        nextHeart.style.visibility = Visibility.Hidden;
+        if (nextHeart != null)
+        {
+            //Sets the next heart as invisible
+            nextHeart.style.visibility = Visibility.Hidden;
+        }
+
     }
 
     //Checks if monster has reached the tower
@@ -362,4 +320,96 @@ public class Enemy : MonoBehaviour
 
         return numToRound + multiple - remainder;
     }
+
+
+    private void Init()
+    {
+        //Animator component for animation manipulation
+        m_animator = GetComponent<Animator>();
+
+        //Variable for the main camera
+        m_mainCamera = Camera.main;
+        //Queries
+        m_healthBar = GetComponent<UIDocument>().rootVisualElement.Q("Container");
+        m_hearts = m_healthBar.Children().ToArray();
+
+        SetHealthBarPosition();
+
+        m_currentHealth = m_maxHealth;
+        //Starts walking animation
+        State = EnemyState.Walking;
+    }
+
+    private IEnumerator Die()
+    {
+        yield return new WaitForSeconds(1.5f);
+
+        gameObject.SetActive(false);
+    }
+
+   
+    public void Reset(WaveManager.MonsterStats stats)
+    {
+        Init();
+
+        Health = stats.Health;
+        m_maxHealth = stats.Health;
+
+        
+
+        //Flip if we can
+        if (m_target != null)
+        {
+            transform.localScale = new Vector2(Mathf.Abs(transform.localScale.x), transform.localScale.y);
+            Flip();
+        }
+
+        foreach (VisualElement heart in m_hearts)
+        {
+            heart.SetEnabled(true);
+        }
+
+        //Set the stats according to whatever is passed in
+        m_speed = stats.Speed;
+        PointsToAward = stats.Points;
+        GoldToAward = stats.Gold;
+
+        //Show itself and enable collisions
+        gameObject.SetActive(true);
+        GetComponent<BoxCollider2D>().enabled = true;
+
+        //Play the walking animation
+        State = EnemyState.Walking;
+
+
+        m_atTower = false;
+    }
+
+    private void Flip()
+    {
+        //Direction facing - negative is right side and positive is left side
+        Vector2 walkDirection = m_target.transform.position - transform.position;
+
+        //If the monster is facing the wrong way (spawns on the right) then it flips the sprite
+        if (walkDirection.x < 0)
+        {
+            Vector3 localScale = transform.localScale;
+            localScale.x *= -1;
+            transform.localScale = localScale;
+        }
+    }
+
+    // TODO - Wrap every animator.SetTrigger in a new function that calls ResetAnimationTriggers before setting the trigger
+    private void ResetAnimationTriggers()
+    {
+        foreach (AnimatorControllerParameter param in m_animator.parameters)
+        {
+            if (param.type == AnimatorControllerParameterType.Trigger)
+            {
+                m_animator.ResetTrigger(param.name);
+            }
+        }
+    }
+
 }
+

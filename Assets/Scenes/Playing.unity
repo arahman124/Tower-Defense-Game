@@ -9999,10 +9999,10 @@ MonoBehaviour:
     size: 1
   - tag: Goblin
     prefab: {fileID: 1250015245384694178, guid: 88761d66f648d75428aacab3bea45c84, type: 3}
-    size: 10
+    size: 1
   - tag: Skeleton
     prefab: {fileID: 3120305801269310451, guid: 692c271584a540c4b817df5bb30147ee, type: 3}
-    size: 10
+    size: 1
 --- !u!4 &1828048265 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8082454958083274174, guid: 891977ab987e6cf41bbf86bf37426fc5, type: 3}

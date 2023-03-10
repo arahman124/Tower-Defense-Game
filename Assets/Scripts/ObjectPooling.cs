@@ -60,8 +60,22 @@ public class ObjectPooling : MonoBehaviour
             return null;
         }
 
+        GameObject objectToSpawn = null;
+
+        // See if the next available object is active
+        if (poolDictionary[tag].Front.Data.gameObject.activeSelf)
+        {
+            // If it is, we want to instantiate a new object and add it to the queue
+            objectToSpawn = Instantiate(poolDictionary[tag].Front.Data);
+        }
+        else
+        {
+            //A individual object within the queue is accessed
+            objectToSpawn = poolDictionary[tag].dequeue().Data;
+        }
+
         //A individual object within the queue is accessed
-        GameObject objectToSpawn = poolDictionary[tag].dequeue().Data;
+        //GameObject objectToSpawn = poolDictionary[tag].dequeue().Data;
 
         //Sets the object as active - visible on scene
         objectToSpawn.SetActive(true);
