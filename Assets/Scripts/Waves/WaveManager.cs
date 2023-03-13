@@ -65,6 +65,7 @@ public class WaveManager : MonoBehaviour
 
     //List to hold the different number of monsters to spawn for each type in each wave
     private List<Wave> m_waves;
+    //List of stats of the monsters to change to at each wave
     private List<MonsterStats> m_skeletonStats = new List<MonsterStats>();
     private List<MonsterStats> m_goblinStats = new List<MonsterStats>();
     private List<MonsterStats> m_bossStats = new List<MonsterStats>();

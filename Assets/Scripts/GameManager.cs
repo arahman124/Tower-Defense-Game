@@ -39,7 +39,9 @@ public class GameManager : MonoBehaviour
 
 
     [Header("Wave Manager and Wave UI")]
+    //Reference to wave manager
     [SerializeField] private WaveManager m_waveManager;
+    //Reference to all UI - buttons on screen and all text
     [SerializeField] private TextMeshProUGUI m_waveCounter;
     [SerializeField] private TextMeshProUGUI m_totalMonsters;
     [SerializeField] private Button m_nextWaveButton;
