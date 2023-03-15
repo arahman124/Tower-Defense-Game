@@ -184,7 +184,6 @@ public class Enemy : MonoBehaviour
                 if (m_atTower && m_cooldownTimer <= 0f)
                 {
                     State = EnemyState.Attack;
-                    AudioManager.Instance.PlaySFX("Attack");
                 }
                 break;
             case EnemyState.Hurt:
@@ -246,8 +245,6 @@ public class Enemy : MonoBehaviour
     {
         //sets the target to move towards as the given target from the spawner script
         m_target = target;
-
-        Flip();
     }
 
     //Finds the current location of the health bar and updates the new location as the monster moves
@@ -343,7 +340,6 @@ public class Enemy : MonoBehaviour
 
     private IEnumerator Die()
     {
-        AudioManager.Instance.PlaySFX("Death");
         yield return new WaitForSeconds(1.5f);
 
         gameObject.SetActive(false);
@@ -357,13 +353,15 @@ public class Enemy : MonoBehaviour
         Health = stats.Health;
         m_maxHealth = stats.Health;
 
-        
-
         //Flip if we can
         if (m_target != null)
         {
             transform.localScale = new Vector2(Mathf.Abs(transform.localScale.x), transform.localScale.y);
-            Flip();
+
+            if (transform.position.x > m_target.transform.position.x)
+            {
+                Flip();
+            }
         }
 
         foreach (VisualElement heart in m_hearts)

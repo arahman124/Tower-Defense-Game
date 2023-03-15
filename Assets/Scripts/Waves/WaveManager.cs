@@ -250,9 +250,10 @@ public class WaveManager : MonoBehaviour
 
         // TODO: Read in from another file for the stats per monster per wave, pass this info into Reset
         // Either do it as a struct or as separate floats 
-        enemyObject.GetComponent<Enemy>().Reset(stats);
         enemyObject.GetComponent<Enemy>().SetTarget(Tower);
         enemyObject.GetComponent<Enemy>().SetPlayerRef(m_player);
+
+        enemyObject.GetComponent<Enemy>().Reset(stats);
     }
 
     //Method for returning the next wave number
