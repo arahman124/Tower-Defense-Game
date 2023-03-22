@@ -30,7 +30,7 @@ public class CrossBow : Weapon
             GameObject newArrow = Instantiate(m_projectile, shotPoint.position, shotPoint.rotation);
             //Gives the arrow a force
             newArrow.GetComponent<Rigidbody2D>().velocity = transform.right * m_launchForce;
-            AudioManager.Instance.PlaySFX("Bow");
+            //AudioManager.Instance.PlaySFX("Bow");
             //Sets the cooldown on the weapon to the shot cooldown that it has currently
             m_coolDownTimer = m_shotCooldown;
         }
