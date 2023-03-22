@@ -84,6 +84,9 @@ public class Enemy : MonoBehaviour
 
                 //Disables the box collider
                 GetComponent<BoxCollider2D>().enabled = false;
+
+                m_healthBar.visible = false;
+
                 //Destroys the game object after 1.5 seconds
                 StartCoroutine("Die");
 
@@ -349,6 +352,8 @@ public class Enemy : MonoBehaviour
     public void Reset(WaveManager.MonsterStats stats)
     {
         Init();
+
+        m_healthBar.visible = true;
 
         Health = stats.Health;
         m_maxHealth = stats.Health;
