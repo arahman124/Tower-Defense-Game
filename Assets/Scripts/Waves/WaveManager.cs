@@ -161,6 +161,12 @@ public class WaveManager : MonoBehaviour
     {
         m_currentWave++;
 
+        if(m_currentWave == 10)
+        {
+            GameManager.GetInstance().GameOver();
+            return;
+        }
+
         m_state = SpawnerState.SPAWNING;
 
         Wave newWave = m_waves[m_currentWave];
