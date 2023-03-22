@@ -2,6 +2,7 @@
 
 public class Rifle : Weapon
 {
+    //Maximum ammo of the rifle
     private int m_maxAmmo;
 
 
@@ -21,6 +22,7 @@ public class Rifle : Weapon
             GameObject newBullet = Instantiate(m_projectile, shotPoint.position, shotPoint.rotation);
             //Gives the arrow a force
             newBullet.GetComponent<Rigidbody2D>().velocity = transform.right * m_launchForce;
+            AudioManager.Instance.PlaySFX("GunShot");
             //Sets the cooldown on the weapon to the shot cooldown that it has currently
             m_coolDownTimer = m_shotCooldown;
         }

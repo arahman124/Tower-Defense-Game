@@ -46,24 +46,7 @@ public class ObjectPooling : MonoBehaviour
     //Start is called before the first frame update
     void Start()
     {
-        //Creates a new variable with a new dictionary
-        poolDictionary = new Dictionary<string, Queue<GameObject>>();
-
-        foreach (Pool pool in pools)
-        {
-            Queue<GameObject> objectPool = new Queue<GameObject>();
-            //List<GameObject> pooledObjects = new List<GameObject>();
-
-            for (int i = 0; i < pool.size; i++)
-            {
-                GameObject obj = Instantiate(pool.prefab);
-                obj.SetActive(false);
-                objectPool.enqueue(obj);
-                //pooledObjects.Add(obj);
-            }
-
-            poolDictionary.Add(pool.tag, objectPool);
-        }
+        RegenPools();
     }
 
     public GameObject SpawnFromPool(string tag, Vector3 position, Quaternion rotation)
@@ -77,8 +60,22 @@ public class ObjectPooling : MonoBehaviour
             return null;
         }
 
+        GameObject objectToSpawn = null;
+
+        // See if the next available object is active
+        if (poolDictionary[tag].Front.Data.gameObject.activeSelf)
+        {
+            // If it is, we want to instantiate a new object and add it to the queue
+            objectToSpawn = Instantiate(poolDictionary[tag].Front.Data);
+        }
+        else
+        {
+            //A individual object within the queue is accessed
+            objectToSpawn = poolDictionary[tag].dequeue().Data;
+        }
+
         //A individual object within the queue is accessed
-        GameObject objectToSpawn = poolDictionary[tag].dequeue().Data;
+        //GameObject objectToSpawn = poolDictionary[tag].dequeue().Data;
 
         //Sets the object as active - visible on scene
         objectToSpawn.SetActive(true);
@@ -110,8 +107,12 @@ public class ObjectPooling : MonoBehaviour
             {
                 //Creates the object (enemy)
                 GameObject obj = Instantiate(pool.prefab);
+
+                obj.name = $"{pool.tag}_{i}";
+
                 //Sets the object as an inactive object - invisible
                 obj.SetActive(false);
+
                 //Adds the object to the queue of pooledObjects
                 objectPool.enqueue(obj);
                 //pooledObjects.Add(obj);

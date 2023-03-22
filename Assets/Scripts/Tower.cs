@@ -37,7 +37,7 @@ public class Tower : MonoBehaviour
             {
                 m_healthBarImage.gameObject.SetActive(false);
 
-                //GameManager.GetInstance().GameOver();
+                GameManager.GetInstance().GameOver();
             }
 
             m_health = value;

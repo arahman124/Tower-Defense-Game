@@ -26,6 +26,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] List<Stats> m_crossBowStats;
     //Initial level of crossbow set to element 0 in the list 
     private int m_crossbowUpgradeLevel = -1;
+    [SerializeField] private TextMeshProUGUI m_upgradeCrossbowText;
 
     //List in inspector for the different upgrades of rifle - look in stats for the upgrade features
     [SerializeField] List<Stats> m_rifleStats;
@@ -45,6 +46,10 @@ public class GameManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI m_waveCounter;
     [SerializeField] private TextMeshProUGUI m_totalMonsters;
     [SerializeField] private Button m_nextWaveButton;
+
+    [SerializeField] private TextMeshProUGUI m_gameOverScore;
+    [SerializeField] private TextMeshProUGUI m_gameOverHighScore;
+
 
     //Singleton pattern
     public static GameManager GetInstance()
@@ -105,7 +110,10 @@ public class GameManager : MonoBehaviour
 
         Debug.Log("Game Over");
 
-        // TODO: Tell the object pooler to tell the enemies to hide their hearts
+        m_gameOverScore.text = $"Score: {m_player.Points:00000}";
+        m_gameOverHighScore.text = $"HiScore: {PlayerPrefs.GetInt(Constants.PLAYER_HIGH_SCORE):00000}";
+
+        //AudioManager.Instance.musicSource.Stop();
 
         //Sets the current game HUD as invisible
         m_gameHUD.SetActive(false);
@@ -147,9 +155,9 @@ public class GameManager : MonoBehaviour
     public void OnUpgradeCrossbowPressed()
     {
         //Checks if the upgrades have been maxed out for the crossbow
-        if (m_crossbowUpgradeLevel - 1 > m_crossBowStats.Count)
+        if (m_crossbowUpgradeLevel + 1 > m_crossBowStats.Count - 1)
         {
-            // Set text to say "MAXIMUM UPGRADE"
+            m_upgradeCrossbowText.text = "MAX UPGRADE!";
             return;
         }
 
